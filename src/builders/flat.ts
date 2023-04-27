@@ -7,7 +7,13 @@ import { Directory } from '../interfaces/directory.interface';
 import { FileTreeLocation } from '../interfaces/location.interface';
 
 function toCamelCase(str: string): string {
-  return str.replace(/[-_.]([a-z])/g, (_, group) => group.toUpperCase());
+  return str.replace(/[-_./](\w)/g, (_, c) => c.toUpperCase());
+}
+
+function getFirstImportPath(path: string) {
+  const lastSlashIndex = path.lastIndexOf('/');
+  const pathname = path.substring(0, lastSlashIndex)
+  return pathname.replaceAll('/', '.')
 }
 
 export function buildFlatBarrel(
@@ -22,10 +28,13 @@ export function buildFlatBarrel(
   return modules.reduce((previous: string, current: FileTreeLocation) => {
     const importPath = buildImportPath(directory, current, baseUrl);
     logger.debug(`Including path ${importPath}`);
+   
     if (exportDefault) {
       const filename = getBasename(current.path);
+      logger.debug(`filename`, filename);
+      logger.debug(`importPath`, importPath);
       previous += `export { default as ${toCamelCase(
-        filename
+        getFirstImportPath(importPath.replaceAll('.', '')) + filename
       )} } from ${quoteCharacter}${importPath}${quoteCharacter}${semicolonCharacter}
 `;
     }

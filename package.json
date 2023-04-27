@@ -1,6 +1,6 @@
 {
-  "name": "barrelsby",
-  "version": "2.5.1",
+  "name": "barrelsby-zigang",
+  "version": "3.0.8",
   "description": "Automatic TypeScript barrels for your entire code base",
   "main": "index.js",
   "scripts": {
